@@ -2,17 +2,17 @@ import React, { Component } from "react";
 import { Radar } from "react-chartjs-2";
 
 const data = {
-  labels: ["Thing 1", "Thing 2", "Thing 3", "Thing 4", "Thing 5", "Thing 6"],
+  labels: ["Errors", "Thing 2", "Thing 3", "Thing 4", "Thing 5", "Thing 6"],
   datasets: [
     {
-      label: "# of Votes",
+      label: "Schudule 1",
       data: [2, 9, 3, 5, 2, 3],
       backgroundColor: "rgba(255, 99, 132, 0.2)",
       borderColor: "rgba(255, 99, 132, 1)",
       borderWidth: 1,
     },
     {
-      label: "# of Pain",
+      label: "Schudule 2",
       data: [3, 2, 4, 1, 6, 9],
       backgroundColor: "rgba(0, 99, 132, 0.2)",
       borderColor: "rgba(0, 99, 132, 1)",
@@ -23,7 +23,7 @@ const data = {
 
 const options = {
   scale: {
-    ticks: { beginAtZero: false },
+    ticks: { beginAtZero: true },
   },
   maintainAspectRatio: false,
 };
