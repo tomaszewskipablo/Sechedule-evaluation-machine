@@ -30,7 +30,13 @@ const options = {
 
 class RadarChart extends React.Component {
   render() {
-    return <Radar data={data} options={options} style={{ height: "500px" }} />;
+    return (
+      <Radar
+        data={data}
+        options={options}
+        style={{ height: "460px", width: "540px" }}
+      />
+    );
   }
 }
 

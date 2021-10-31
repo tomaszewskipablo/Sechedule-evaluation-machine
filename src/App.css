@@ -6,11 +6,43 @@
   grid-template-rows: auto 1fr auto;
   min-height: 81vh;
 }
+.ant-layout-content {
+  padding: 0 50px;
+  margin-top: 64px;
+}
+
+@media only screen and (max-width: 600px) {
+  .ant-layout-content {
+    padding: 0 0px;
+  }
+}
+
 .logo {
   float: left;
-  margin: 6px 24px 16px 0;
+  margin: 4px 24px 16px 0;
 }
 .ant-row-rtl #components-layout-demo-top .logo {
   float: right;
   margin: 16px 0 16px 24px;
+}
+
+.git:hover {
+  background-color: #fff;
+}
+
+ul {
+  text-align: center;
+  margin: 30px 10;
+  padding-left: 0px;
+}
+
+.graphPanel ul li {
+  display: inline-block;
+  width: 50%;
+  min-width: 300px;
+  min-height: 300px;
+}
+
+.graphPanel:hover {
+  background-color: #fafafa;
 }
