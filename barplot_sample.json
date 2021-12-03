@@ -1,0 +1,12 @@
+{
+    "number_of_classrooms_and_sits":
+    {
+        "number_of_classrooms": [10, 0, 3, 4, 6, 2], 
+        "number_of_sits": [3, 2, 1, 4, 5, 6],
+    },
+    "number_of_classrooms_unused_per_day":
+    {
+        "number_of_classrooms_unused": [10, 5, 6],
+        "day": ["2021-12-01", "2021-12-02", "2021-12-03"],
+    },
+}
