@@ -30,7 +30,10 @@ class NavBar extends React.Component {
             {<a href="/visualization"> Visualization </a>}
             <DotChartOutlined style={{ margin: "5px" }} />
           </Menu.Item>
-          <Menu.Item key={3}>{`Upload File`}</Menu.Item>
+          <Menu.Item key={3}>
+            {<a href="/densitymap"> Desnsity map </a>}
+            <DotChartOutlined style={{ margin: "5px" }} />
+          </Menu.Item>
         </Menu>
       </React.Fragment>
     );

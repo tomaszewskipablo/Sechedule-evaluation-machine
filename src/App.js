@@ -2,6 +2,7 @@ import React from "react";
 import "antd/dist/antd.css";
 import "./App.css";
 import FileSite from "./components/FileSite";
+import DensitySite from "./components/densitySite";
 import NavBar from "./components/NavBar";
 import { Layout, Menu } from "antd";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -24,6 +25,9 @@ class App extends React.Component {
                 </Route>
                 <Route path="/visualization">
                   <VisualizationSite />
+                </Route>
+                <Route path="/densitymap">
+                  <DensitySite />
                 </Route>
               </Switch>
             </div>

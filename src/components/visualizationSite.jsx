@@ -1,12 +1,17 @@
 import React, { Component } from "react";
 import RadarChart from "./RadarChart";
 import Doughtnut from "./Doughtnut";
-import { Row, Col } from "antd";
+import BarChart from "./BarChart";
+import BarChartSeatsPerClass from "./BarChartSeatsPerClass";
 
 class VisualizationSite extends React.Component {
   render() {
     return (
       <div className="graphPanel">
+        <ul>
+          <li>Radar plot</li>
+          <li>Number of overbooked classes</li>
+        </ul>
         <ul>
           <li>
             <RadarChart />
@@ -15,6 +20,8 @@ class VisualizationSite extends React.Component {
             <Doughtnut />
           </li>
         </ul>
+        <BarChart />
+        <BarChartSeatsPerClass />
       </div>
     );
   }
