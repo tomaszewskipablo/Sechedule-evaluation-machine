@@ -20,7 +20,6 @@ ChartJS.register(
 );
 
 export const options = {
-  indexAxis: "y",
   elements: {
     bar: {
       borderWidth: 2,
