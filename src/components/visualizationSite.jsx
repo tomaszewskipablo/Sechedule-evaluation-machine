@@ -9,6 +9,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+//import { Row, Col } from "antd";
+import ReactDensityPlot from "./ReactDensityPlot";
+import GithubDensityPlot from "./Github-like-density-plot";
 
 let names = ["adam", "pawel", "gergly", "person", "abc"];
 
@@ -71,6 +74,7 @@ let data = {
     },
   ],
 };
+
 
 class VisualizationSite extends React.Component {
   constructor(props) {
