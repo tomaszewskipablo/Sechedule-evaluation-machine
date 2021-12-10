@@ -4,6 +4,9 @@ import Doughtnut from "./Doughtnut";
 import BarChart from "./BarChart";
 import BarChartSeatsPerClass from "./BarChartSeatsPerClass";
 import { Checkbox, Button } from "antd";
+import { Row, Col } from "antd";
+import ReactDensityPlot from "./ReactDensityPlot";
+import GithubDensityPlot from "./Github-like-density-plot";
 
 const names = ["adam", "pawel", "gergly", "person", "abc"];
 
@@ -57,6 +60,7 @@ let data = {
   ],
   datasets: final,
 };
+
 
 class VisualizationSite extends React.Component {
   constructor(props) {
@@ -156,6 +160,12 @@ class VisualizationSite extends React.Component {
               </li>
               <li>
                 <Doughtnut labels={names} data={[12, 19, 3, 5, 2]} />
+              </li>
+              <li>
+                <ReactDensityPlot/>
+              </li>
+              <li>
+                <GithubDensityPlot/>
               </li>
             </ul>
             <BarChart />
