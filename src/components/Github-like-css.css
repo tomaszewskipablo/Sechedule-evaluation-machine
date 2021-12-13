@@ -20,9 +20,9 @@ html, body {
 }
 .timeline .timeline-months-month {
     width: 10px;
-    margin: 2px;
+    margin: 4.4px;
     border: 1px solid transparent;
-    font-size: 10px;
+    font-size: 11px;
 }
 .timeline .timeline-months .Jan ~ .Jan, .timeline .timeline-months .Feb ~ .Feb, .timeline .timeline-months .Mar ~ .Mar, .timeline .timeline-months .Apr ~ .Apr, .timeline .timeline-months .May ~ .May, .timeline .timeline-months .Jun ~ .Jun, .timeline .timeline-months .Jul ~ .Jul, .timeline .timeline-months .Aug ~ .Aug, .timeline .timeline-months .Sep ~ .Sep, .timeline .timeline-months .Oct ~ .Oct, .timeline .timeline-months .Nov ~ .Nov, .timeline .timeline-months .Dec ~ .Dec {
     visibility: hidden;
