@@ -1,8 +1,9 @@
+import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import boto3
 
 def get_unnecessary_columns():
     return ["Turnos com capacidade superior à capacidade das características das salas",
@@ -170,6 +171,36 @@ def get_total_free_hours_with_minimum_limit(df, minimum_hours_limit=2):
 
     return total_free_hours
 
+def get_number_of_classrooms_unused_per_day(df):
+    """ Returns the number of classrooms that were not used for each day. """
+
+    # Assume that the number of classroom is not going to change between the years
+    total_classrooms = 131
+
+    return (total_classrooms - df.dropna().groupby(by='Date')["Room number"].nunique()).to_dict()
+
+def get_number_of_classroom_and_sits(classroom_df):
+    """ Returns a dictionary that stores the range of sittings as a key and the number of classes in that range. """
+    bins = [0, 15, 30, 50, 100, 200, 500]
+    labels = ['0-15','15-30','30-50','50-100','100-200', '200-500']
+
+    classroom_df['binned_cap'] = pd.cut(classroom_df['Capacidade Normal'], bins=bins, labels=labels)
+
+    return classroom_df['binned_cap'].value_counts().to_dict()
+
+def get_uploaded_file_names():
+    """ Returns a list of the file names that were uploaded to S3"""
+
+    s3 = boto3.resource('s3')
+    my_bucket = s3.Bucket('timetableuploadedfiles')
+
+    files = []
+    for my_bucket_object in my_bucket.objects.all():
+        files.append(my_bucket_object.key)
+
+    return json.dumps(files)
 
 
 
+if __name__ == "__main__":
+    print(get_uploaded_file_names())
