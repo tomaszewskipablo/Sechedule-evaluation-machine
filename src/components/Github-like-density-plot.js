@@ -24,8 +24,8 @@ function Cell({ color }) {
 }
 
 function Hour({ startDate, index }) {
-  let date = moment(startDate).add(index * 5, 'day');
-  let hourName = date.format('MMM');
+  let date = moment(startDate).add(index, 'hour');
+  let hourName = date.format('hh');
 
   return (
     <div className={`timeline-months-month ${hourName}`}>
@@ -48,10 +48,10 @@ function WeekDay({ index }) {
 }
 
 function Timeline({ range, data, colorFunc }) {
-  let days = Math.abs(range[0].diff(range[1], 'days'));
-  let cells = Array.from(new Array(days));
+  let hours = Math.abs(range[0].diff(range[1], 'hours'));
+  let cells = Array.from(new Array(hours * 5));
   let weekDays = Array.from(new Array(5));
-  let months = Array.from(new Array(Math.floor(days / 5)));
+  let months = Array.from(new Array(Math.floor(hours)));
 
   let min = Math.min(0, ...data.map(d => d.value));
   let max = Math.max(...data.map(d => d.value));
@@ -59,7 +59,7 @@ function Timeline({ range, data, colorFunc }) {
   let colorMultiplier = 1 / (max - min);
 
   let startDate = range[0];
-  const DayFormat = 'DDMMYYYY';
+  const DayFormat = 'hh';
 
   return (
     <div className='timeline'>
@@ -76,7 +76,7 @@ function Timeline({ range, data, colorFunc }) {
 
         <div className="timeline-cells">
           {cells.map((_, index) => {
-            let date = moment(startDate).add(index, 'day');
+            let date = moment(startDate).add(index, 'hour');
             let dataPoint = data.find(d => moment(date).format(DayFormat) === moment(d.date).format(DayFormat));
             let alpha = colorMultiplier * dataPoint.value;
             let color = colorFunc({ alpha });
@@ -98,12 +98,15 @@ function Timeline({ range, data, colorFunc }) {
 
 function GithubDensityPlot() {
   // 1 year range
-  let startDate = moment().add(-365, 'days');
-  let dateRange = [startDate, moment()];
+  let countOfHoursToDisplay = 15;
+  let momentNow = moment('1971-jan-1 23:00');
+  let startDate = moment(momentNow).add(-countOfHoursToDisplay, 'hours');
+  let dateRange = [startDate, momentNow];
 
-  let data = Array.from(new Array(365)).map((_, index) => {
+  // dummy data
+  let data = Array.from(new Array(countOfHoursToDisplay)).map((_, index) => {
     return {
-      date: moment(startDate).add(index, 'day'),
+      date: moment(startDate).add(index, 'hours'),
       value: Math.floor(Math.random() * 100)
     };
   });
