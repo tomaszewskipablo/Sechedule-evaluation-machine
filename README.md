@@ -14,10 +14,11 @@ More to be added later.
 
 1. Metrics for the radarplot
     1. Number of classrooms free for at least 2 hours
+        1. *get_total_free_hours_with_minimum_limit*
     1. Number of classrooms free for a whole day
         1. Function: *get_number_of_classrooms_free_for_the_whole_day*
     1. Number of overbooked classes
-        1. Function: *get_total_overbook_classes
+        1. Function: *get_total_overbook_classes*
     1. Number of times students need to change rooms (Between classes or after one class has finished and before the next starts)
         1. Function: *get_total_class_changes*
     1. Total number of classes with unspecified date
@@ -32,7 +33,6 @@ More to be added later.
     1. Total slots needed for each week (Total slot = Sum of students that need to sit the class during the week), timeseries plot
     1. Number of classes for each weekday 
         1. Function: *get_classes_per_days*
-        1. Route: 
 1. Heatmap / Density map
     1. Timetable with number of classes being in that given time period (2 hours windows)
     
