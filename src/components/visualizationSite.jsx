@@ -160,14 +160,10 @@ class VisualizationSite extends React.Component {
               </li>
               <li>
                 <Doughtnut labels={names} data={[12, 19, 3, 5, 2]} />
-              </li>
-              <li>
-                <ReactDensityPlot/>
-              </li>
-              <li>
-                <GithubDensityPlot/>
-              </li>
+              </li>  
             </ul>
+            <ReactDensityPlot/>
+            <GithubDensityPlot/>
             <BarChart />
             <BarChartSeatsPerClass />
           </div>

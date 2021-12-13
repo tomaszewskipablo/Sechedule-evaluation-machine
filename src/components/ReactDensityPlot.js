@@ -3,20 +3,31 @@ import React, { Component } from "react";
 
 const data = [{
     "date": "2016-01-01",
-    "total": 17164,
+    "total": 41500,
     "details": [{
-      "name": "Project 1",
-      "date": "2016-01-01 12:30:45",
-      "value": 9192
-    }, {
-      "name": "Project 2",
-      "date": "2016-01-01 13:37:00",
-      "value": 6753
+      "name": "Mon",
+      "date": "2016-01-01 12:15",
+      "value": 10000
     },
     {
-      "name": "Project N",
-      "date": "2016-01-01 17:52:41",
-      "value": 1219
+      "name": "Tue",
+      "date": "2016-01-01 9:30",
+      "value": 8000
+    },
+    {
+      "name": "Wed",
+      "date": "2016-01-01 10:45",
+      "value": 9000
+    },
+    {
+      "name": "Thu",
+      "date": "2016-01-01 18:00",
+      "value": 7000
+    },
+    {
+      "name": "Fri",
+      "date": "2016-01-01 19:15",
+      "value": 7500
     }]
   }];
 
@@ -24,9 +35,13 @@ const data = [{
 class ReactDensityPlot extends React.Component {
 
     render() {
+      let color = '#45ff00';
+      let overview = 'day';
         return (
             <CalendarHeatmap
-                data={data}>
+                data={data}
+                color={color}
+                overview={overview}>
             </CalendarHeatmap>
         );
     }   

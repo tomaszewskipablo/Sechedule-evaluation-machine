@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 const DayNames = {
-  0: 'Mond',
+  0: 'Mon',
   1: 'Tue',
   2: 'Wed',
   3: 'Thu',
@@ -114,8 +114,6 @@ function GithubDensityPlot() {
   return (
     <>
       <Timeline range={dateRange} data={data} colorFunc={({ alpha }) => `rgba(3, 160, 3, ${alpha})`} />
-      <Timeline range={dateRange} data={data} colorFunc={({ alpha }) => `rgba(220, 5,  3, ${alpha})`} />
-      <Timeline range={dateRange} data={data} colorFunc={({ alpha }) => `rgba(5, 5,  200, ${alpha})`} />
     </>
   )
 }
