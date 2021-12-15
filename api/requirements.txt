@@ -1,0 +1,13 @@
+# Requirements with specified versions
+
+Flask==2.0.2
+Flask-RESTful==0.3.9
+pandas==1.3.5
+numpy==1.21.4
+matplotlib==3.5.1
+seaborn==0.11.2
+
+# Requirements without specified versions
+
+boto3
+s3fs
