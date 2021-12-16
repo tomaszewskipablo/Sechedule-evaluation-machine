@@ -110,20 +110,26 @@ class VisualizationSite extends React.Component {
         "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
       let endpoint = base.concat(element);
 
-      const res = await fetch(endpoint);
-      const dt = await res.json();
-      apiData.push(dt);
-      // .then((resa) => resa.json())
-      // .then((json) => {
-      //   json = Object.values(json);
-      //   apiData.push(json);
-      // });
+      fetch(endpoint)
+        .then((resa) => resa.json())
+        .then((json) => {
+          json = Object.values(json);
+          apiData.push(json);
+          if (apiData.length == this.state.scheduleNamescheckedValues.length)
+          {
+            console.log(apiData);
+            this.state.data = this.provideRadarData();
+          }
+          else
+          {
+            console.log('a fetch returned, but it wasnt the last one');
+          }
+        });
     });
   };
 
   getVisualizeData = () => {
     this.fetchData();
-    this.state.data = this.provideRadarData();
   };
 
   updateCheckedValueList = (checkedValuesList) => {
