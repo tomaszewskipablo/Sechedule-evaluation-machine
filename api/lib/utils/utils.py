@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import boto3
 import s3fs
+from io import StringIO
+
 
 def get_unnecessary_columns():
     return ["Turnos com capacidade superior à capacidade das características das salas",
@@ -256,6 +258,17 @@ def get_barplot_data(schedule_filename, classroom_filename):
     }
 
     return result_json
+
+
+def save_file_to_s3(filename):
+    print(filename)
+    bucket = 'timetableuploadedfiles'  # already created on S3
+    s3 = boto3.client('s3')
+   
+    s3.upload_file(filename, bucket, filename)
+    print(filename)
+    return
+
 
 if __name__ == "__main__":
     print(get_radarplot_metrics('schedule.csv', 'classrooms.csv'))

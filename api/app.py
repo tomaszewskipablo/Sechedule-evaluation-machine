@@ -4,6 +4,7 @@ import pandas as pd
 import ast
 from lib.utils.utils import *
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app)
@@ -33,6 +34,19 @@ def barplot_data():
     classroom_file = request.args.get('classroom_filename')
 
     return jsonify(get_barplot_data(schedule_file, classroom_file))
+
+@app.route('/uploader', methods=['POST', 'PUT'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['file']
+
+        bucket = 'timetableuploadedfiles'  # already created on S3
+        s3 = boto3.client('s3')
+
+        s3.upload_fileobj(f, bucket, f.filename)
+
+        return 'file uploaded successfully'
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)  # run our Flask app
