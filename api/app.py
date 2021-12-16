@@ -1,10 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api, reqparse
 import pandas as pd
 import ast
-from flask import jsonify
-from flask import request
-
+from lib.utils.utils import *
 
 app = Flask(__name__)
 # api = Api(app)
@@ -15,12 +13,25 @@ def get_timetables():
     return jsonify({'timetable1':'test1', 'timetable2':'test2'})
 
 
-@app.route('/testing/')
-def get_number_of_classrooms():
-    print(request.args)
-    return f"{request.args.get('id')}", 200
+@app.route('/s3_files')
+def files_on_s3():
+    return jsonify(get_uploaded_file_names())
 
 
-# if __name__ == '__main__':
-#     app.run()  # run our Flask app
+@app.route('/radarplotmetrics')
+def radarplot_metrics():
+    schedule_file = request.args.get('schedule_filename')
+
+    return jsonify(get_radarplot_metrics(schedule_file))
+
+
+@app.route('/barplotdata')
+def barplot_data():
+    schedule_file = request.args.get('schedule_filename')
+    classroom_file = request.args.get('classroom_filename')
+
+    return jsonify(get_barplot_data(schedule_file, classroom_file))
+
+if __name__ == '__main__':
+    app.run(debug=False)  # run our Flask app
 
