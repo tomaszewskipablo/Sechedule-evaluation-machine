@@ -8,15 +8,15 @@ import { stringLiteral } from "@babel/types";
 
 let names = ["adam", "pawel", "gergly", "person", "abc"];
 
-const a = [10, 20, 20, 20, 11]; // adams
+const a = [10, 20, 20, 20, 11, 10]; // adams
 
-const b = [13, 10, 3, 6, 2]; // pawel
+const b = [13, 10, 3, 6, 2, 11]; // pawel
 
 const c = [6, 7, 4, 5, 3];
 const d = [2, 2, 4, 4, 4];
 const abc = [4, 7, 8, 11, 2];
 
-const apiData = [a, b, c, d, abc];
+let apiData = [];
 
 const colors = [
   "rgba(0, 99, 132, 0.2)",
@@ -55,6 +55,7 @@ let data = {
     "Matching rate",
     "Some statistics",
     "Some statistics",
+    "Some statistics",
   ],
   datasets: final,
 };
@@ -66,6 +67,7 @@ class VisualizationSite extends React.Component {
       scheduleNames: [],
       isLoaded: false,
       scheduleNamescheckedValues: [],
+      data,
     };
   }
 
@@ -85,12 +87,11 @@ class VisualizationSite extends React.Component {
         this.setState({
           scheduleNames: filesNamesArrayToTrim.map((x) => x.trim()),
         });
-        console.log(this.state.scheduleNames);
-        names = this.state.scheduleNames;
+        // console.log(this.state.scheduleNames);
       });
   }
 
-  getVisualizeData = () => {
+  fetchData = async () => {
     if (this.state.scheduleNamescheckedValues.length > 0) {
       this.setState({
         isLoaded: true,
@@ -100,20 +101,29 @@ class VisualizationSite extends React.Component {
         isLoaded: false,
       });
     }
-    this.provideRadarData();
+    names = this.state.scheduleNamescheckedValues;
 
+    apiData = [];
     this.state.scheduleNamescheckedValues.forEach((element) => {
+      console.log("Wyswietlam element: ", element);
       let base =
         "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
-      let s = base.concat(element);
-      console.log(s);
-      fetch(s)
-        .then((resa) => resa.json())
-        .then((json) => {
-          console.log(json);
-        });
+      let endpoint = base.concat(element);
+
+      const res = await fetch(endpoint);
+      const dt = await res.json();
+      apiData.push(dt);
+      // .then((resa) => resa.json())
+      // .then((json) => {
+      //   json = Object.values(json);
+      //   apiData.push(json);
+      // });
     });
-    console.log("checked = ", this.state.scheduleNamescheckedValues);
+  };
+
+  getVisualizeData = () => {
+    this.fetchData();
+    this.state.data = this.provideRadarData();
   };
 
   updateCheckedValueList = (checkedValuesList) => {
@@ -134,7 +144,7 @@ class VisualizationSite extends React.Component {
 
     for (let j = 0; j < arrayMain.length; j++) {
       const obj = {
-        label: names[j],
+        label: this.state.scheduleNamescheckedValues[j],
         data: arrayMain[j],
         backgroundColor: colors[j],
         borderColor: colorsBorder[j],
@@ -142,10 +152,24 @@ class VisualizationSite extends React.Component {
       };
       final.push(obj);
     }
+
+    return {
+      labels: [
+        "Free classes, at least 2 hours",
+        "Free classes, whole day",
+        "Matching rate",
+        "Some statistics",
+        "Some statistics",
+        "Some statistics",
+      ],
+      datasets: final,
+    };
+
+    console.log("To jest nowy state, powinien byc update: ", this.state.data);
   };
 
   render() {
-    var { isLoaded, scheduleNames, checkedValues } = this.state;
+    var { isLoaded, scheduleNames, checkedValues, data } = this.state;
 
     if (!isLoaded) {
       return (
@@ -174,7 +198,7 @@ class VisualizationSite extends React.Component {
             </ul>
             <ul>
               <li>
-                <RadarChart data={data} />
+                <RadarChart data={this.state.data} />
               </li>
               <li>
                 <Doughtnut labels={names} data={[12, 19, 3, 5, 2]} />
