@@ -12,15 +12,20 @@ const options = {
 class RadarChart extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: props.data,
-    };
+    // this.state = {
+    //   data: props.data,
+    // };
+  }
+
+  componentDidUpdate() {
+    console.log("UPDATE!!!!!!");
+    console.log("Jestem w komponencie to jest efekt: ", this.props.data);
   }
 
   render() {
     return (
       <Radar
-        data={this.state.data}
+        data={this.props.data}
         options={options}
         style={{ height: "460px", width: "540px" }}
       />
