@@ -96,26 +96,23 @@ function Timeline({ range, data, colorFunc }) {
   );
 }
 
-function GithubDensityPlot() {
-  // 1 year range
-  let countOfHoursToDisplay = 15;
-  let momentNow = moment('1971-jan-1 23:00');
-  let startDate = moment(momentNow).add(-countOfHoursToDisplay, 'hours');
-  let dateRange = [startDate, momentNow];
+class GithubDensityPlot extends React.Component {
 
-  // dummy data
-  let data = Array.from(new Array(countOfHoursToDisplay)).map((_, index) => {
-    return {
-      date: moment(startDate).add(index, 'hours'),
-      value: Math.floor(Math.random() * 100)
-    };
-  });
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
 
-  return (
-    <>
-      <Timeline range={dateRange} data={data} colorFunc={({ alpha }) => `rgba(3, 160, 3, ${alpha})`} />
-    </>
-  )
+  render() {
+    // 1 year range
+    console.log(this.props.data);
+    return (
+      <>
+        <Timeline range={this.props.dateRange} data={this.props.data} colorFunc={({ alpha }) => `rgba(3, 160, 3, ${alpha})`} />
+      </>
+    );
+  }
 }
 
 export default GithubDensityPlot;
