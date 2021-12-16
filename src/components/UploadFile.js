@@ -2,6 +2,7 @@ import axios from "axios";
 
 import React, { Component } from "react";
 
+
 class UploadFile extends Component {
   state = {
     // Initially, no file is selected
@@ -20,18 +21,24 @@ class UploadFile extends Component {
     const formData = new FormData();
 
     // Update the formData object
-    formData.append(
-      "myFile",
-      this.state.selectedFile,
-      this.state.selectedFile.name
-    );
+    formData.append("myFile", this.state.selectedFile, this.state.selectedFile.name);
+    //formData.append('file', fs.createReadStream(this.state.selectedFile), this.state.selectedFile.name); 
+
 
     // Details of the uploaded file
     console.log(this.state.selectedFile);
 
+    console.log(formData.entries());
+
     // Request made to the backend api
     // Send formData object
-    axios.post("api/uploadfile", formData);
+    axios.post("http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/uploader", formData)
+      .then(res => {
+        console.log(`Success` + res.data);
+    })
+    .catch(err => {
+        console.log(err);
+    });
   };
 
   // File content to be displayed after
