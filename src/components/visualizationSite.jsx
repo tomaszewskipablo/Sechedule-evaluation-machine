@@ -12,6 +12,8 @@ import Col from "react-bootstrap/Col";
 //import { Row, Col } from "antd";
 import ReactDensityPlot from "./ReactDensityPlot";
 import GithubDensityPlot from "./Github-like-density-plot";
+import { Row, Col } from "antd";
+
 
 let names = ["adam", "pawel", "gergly", "person", "abc"];
 
@@ -230,6 +232,7 @@ class VisualizationSite extends React.Component {
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
+<<<<<<< HEAD
           <Container>
             <Row>
               <Col sm={9}>
@@ -245,6 +248,24 @@ class VisualizationSite extends React.Component {
           </Container>
           <BarChart />
           <BarChartSeatsPerClass />
+=======
+          <div className="graphPanel">
+            <ul>
+              <li>Radar plot</li>
+              <li>Number of overbooked classes</li>
+            </ul>
+            <ul>
+              <li>
+                <RadarChart data={data} />
+              </li>
+              <li>
+                <Doughtnut labels={names} data={[12, 19, 3, 5, 2]} />
+              </li>  
+            </ul>
+            <BarChart />
+            <BarChartSeatsPerClass />
+          </div>
+>>>>>>> 6faea63 (density plots moved to density site)
         </React.Fragment>
       );
     }
