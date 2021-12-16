@@ -4,8 +4,9 @@ import Doughtnut from "./Doughtnut";
 import BarChart from "./BarChart";
 import BarChartSeatsPerClass from "./BarChartSeatsPerClass";
 import { Checkbox, Button } from "antd";
+import { stringLiteral } from "@babel/types";
 
-const names = ["adam", "pawel", "gergly", "person", "abc"];
+let names = ["adam", "pawel", "gergly", "person", "abc"];
 
 const a = [10, 20, 20, 20, 11]; // adams
 
@@ -74,14 +75,18 @@ class VisualizationSite extends React.Component {
     )
       .then((res) => res.json())
       .then((json) => {
+        const filesNamesArrayToTrim = json
+          .replace("[", "")
+          .replace("]", "")
+          .replace(/\\"/g, "")
+          .replace(/"/g, "")
+          .split(",");
+
         this.setState({
-          scheduleNames: json
-            .replace("[", "")
-            .replace("]", "")
-            .replace(/\\"/g, "")
-            .replace(/"/g, "")
-            .split(","),
+          scheduleNames: filesNamesArrayToTrim.map((x) => x.trim()),
         });
+        console.log(this.state.scheduleNames);
+        names = this.state.scheduleNames;
       });
   }
 
@@ -96,6 +101,18 @@ class VisualizationSite extends React.Component {
       });
     }
     this.provideRadarData();
+
+    this.state.scheduleNamescheckedValues.forEach((element) => {
+      let base =
+        "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
+      let s = base.concat(element);
+      console.log(s);
+      fetch(s)
+        .then((resa) => resa.json())
+        .then((json) => {
+          console.log(json);
+        });
+    });
     console.log("checked = ", this.state.scheduleNamescheckedValues);
   };
 
@@ -139,18 +156,17 @@ class VisualizationSite extends React.Component {
           />
           <Button onClick={this.getVisualizeData}>Confirm</Button>
         </div>
-        // <p>Hello</p>
       );
     } else {
       return (
         <React.Fragment>
-          {/* <div>
+          <div>
             <Checkbox.Group
               options={scheduleNames}
               onChange={this.updateCheckedValueList}
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
-          </div> */}
+          </div>
           <div className="graphPanel">
             <ul>
               <li>Radar plot</li>
