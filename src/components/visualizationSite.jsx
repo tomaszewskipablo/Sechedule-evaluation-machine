@@ -90,6 +90,7 @@ class VisualizationSite extends React.Component {
   }
 
   componentDidMount() {
+    console.log("componentDidMount is called");
     fetch(
       "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/s3_files"
     )
