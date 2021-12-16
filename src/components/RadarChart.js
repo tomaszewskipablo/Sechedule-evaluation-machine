@@ -12,13 +12,14 @@ const options = {
 class RadarChart extends React.Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   data: props.data,
-    // };
+    this.state = {
+      data: props.data,
+    };
   }
 
   componentDidUpdate() {
     console.log("UPDATE!!!!!!");
+    // console.log("UPDATE!!!!!!");
     console.log("Jestem w komponencie to jest efekt: ", this.props.data);
   }
 
