@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -38,36 +38,20 @@ export const options = {
 };
 
 const labels = [
-  "400",
-  "355",
-  "350",
-  "300",
-  "150",
-  "200",
-  "44",
-  "33",
-  "31",
-  "29",
-  "26",
-  "23",
-  "22",
-  "18",
-  "14",
-  "11",
-  "10",
-  "5",
-  "4",
+  "0-15",
+  "15-30",
+  "30-50",
+  "50-100",
+  "100-200",
+  "200-500"
 ];
 
-export const data = {
+export const initialData = {
   labels,
   datasets: [
     {
       label: "pawel",
-      data: [
-        10, 0, 11, 5, 3, 2, 8, 8, 9, 2, 10, 9, 2, 14, 16, 22, 14, 12, 33, 12, 2,
-        3, 11,
-      ],
+      data: [],
       backgroundColor: "rgba(100,100, 100, 0.2)",
       borderColor: "rgba(100, 100, 100, 1)",
       borderWidth: 1,
@@ -75,9 +59,37 @@ export const data = {
   ],
 };
 
-class BarChartSeatsPerClass extends React.Component {
-  render() {
-    return <Bar options={options} data={data} />;
-  }
+export function BarChartSeatsPerClass() {
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    fetch('http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=schedule.csv&classroom_filename=classrooms.csv')
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json);
+      let newData = {
+        labels,
+        datasets: [
+          {
+            label: "pawel",
+            data: [],
+            backgroundColor: "rgba(100,100, 100, 0.2)",
+            borderColor: "rgba(100, 100, 100, 1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["0-15"]);
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["15-30"]);
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["30-50"]);
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["50-100"]);
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["100-200"]);
+      newData.datasets[0].data.push(json["number_of_classrooms_and_sits"]["200-500"]);
+      setData(newData);
+      console.log(newData);
+    });
+  }, []); 
+  
+  return <Bar options={options} data={data} />;
 }
 export default BarChartSeatsPerClass;
