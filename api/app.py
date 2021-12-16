@@ -3,8 +3,10 @@ from flask_restful import Resource, Api, reqparse
 import pandas as pd
 import ast
 from lib.utils.utils import *
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 # api = Api(app)
 
 
@@ -33,5 +35,5 @@ def barplot_data():
     return jsonify(get_barplot_data(schedule_file, classroom_file))
 
 if __name__ == '__main__':
-    app.run(debug=False)  # run our Flask app
+    app.run(host='0.0.0.0', port=5000)  # run our Flask app
 
