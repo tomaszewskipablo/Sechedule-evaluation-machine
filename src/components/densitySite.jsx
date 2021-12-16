@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import ReactDensityPlot from "./ReactDensityPlot";
+import GithubDensityPlot from "./Github-like-density-plot";
 
 class DensitySite extends React.Component {
   render() {
-    return <React.Fragment>The site is empty</React.Fragment>;
+    return (
+      <React.Fragment>
+        <ReactDensityPlot/>
+        <GithubDensityPlot/>
+      </React.Fragment>
+    );
   }
 }
 
