@@ -72,14 +72,19 @@ class VisualizationSite extends React.Component {
   }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    fetch(
+      "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/s3_files"
+    )
       .then((res) => res.json())
       .then((json) => {
         this.setState({
-          scheduleNames: ["adam", "pawel", "gergly", "kac"],
-          //scheduleNames: json,
+          scheduleNames: json
+            .replace("[", "")
+            .replace("]", "")
+            .replace(/\\"/g, "")
+            .replace(/"/g, "")
+            .split(","),
         });
-        console.log(json);
       });
   }
 
@@ -137,17 +142,18 @@ class VisualizationSite extends React.Component {
           />
           <Button onClick={this.getVisualizeData}>Confirm</Button>
         </div>
+        // <p>Hello</p>
       );
     } else {
       return (
         <React.Fragment>
-          <div>
+          {/* <div>
             <Checkbox.Group
               options={scheduleNames}
               onChange={this.updateCheckedValueList}
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
-          </div>
+          </div> */}
           <div className="graphPanel">
             <ul>
               <li>Radar plot</li>
