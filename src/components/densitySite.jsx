@@ -121,7 +121,7 @@ class DensitySite extends React.Component {
         }]
       }];
 
-     
+      console.log(this.state.scheduleNamescheckedValues[0]);
       return (
         <React.Fragment>
           <div>
@@ -132,7 +132,7 @@ class DensitySite extends React.Component {
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
           {/*<ReactDensityPlot data={reactCalendarData} />*/}
-          <GithubDensityPlot data={githubLikeData} schedule={'schedule.csv'} classroom={'classrooms.csv'} dateRange={[startDate, momentNow]} />
+          <GithubDensityPlot data={githubLikeData} schedule={`${this.state.scheduleNamescheckedValues[0].trim()}`} classroom={'classrooms.csv'} dateRange={[startDate, momentNow]} />
         </React.Fragment>
       );
     }
