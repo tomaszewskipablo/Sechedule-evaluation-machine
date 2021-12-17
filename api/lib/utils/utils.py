@@ -32,6 +32,7 @@ def rename_columns_from_portuguese_to_english(df):
         'Turno': 'ID',
         'Turma': 'Group ID',
         'Inscritos no turno (no 1º semestre é baseado em estimativas)': 'Number of enrolled students',
+        'Inscritos no turno':'Number of enrolled students',
         'Dia da Semana': 'Day of the week',
         'Início': 'Start',
         'Fim': 'End',
@@ -67,6 +68,8 @@ def add_calculated_columns(df):
     df["Overall time in hours"] = df["End"] - df["Start"]
     df["Overall time in hours"] = df["Overall time in hours"] / pd.Timedelta('1 hour')
     df["Overall time in hours"].astype(float).sort_values(ascending=True)
+    df["Start_hour"] = df["Start"].dt.hour
+
 
     return df
 
@@ -227,12 +230,14 @@ def get_radarplot_metrics(schedule_filename):
     schedule_df = clean_schedule_dataframe(schedule_df)
 
     result_json = {
-        'free_classrooms_for_min_2_hours': int(get_total_free_hours_with_minimum_limit(schedule_df)),
-        'free_classrooms_for_one_day': int(get_number_of_classrooms_free_for_the_whole_day(schedule_df)),
+        #'free_classrooms_for_min_2_hours': int(get_total_free_hours_with_minimum_limit(schedule_df)),
+        #'free_classrooms_for_one_day': int(get_number_of_classrooms_free_for_the_whole_day(schedule_df)),
         'overbooked_classes':  int(get_total_overbook_classes(schedule_df)),
         'required_room_change_for_students': int(get_total_class_changes(schedule_df)),
         'classes_with_unspecified_date': int(get_total_number_of_classes_with_unspecified_date(schedule_df)),
-        'unused_classrooms': int(get_total_classrooms_unused_in_semester(schedule_df))
+        'unused_classrooms': int(get_total_classrooms_unused_in_semester(schedule_df)),
+        'number_of_late_starting_classes': get_number_of_late_starting_classes(schedule_df),
+        'number_of_early_starting_classes': get_number_of_early_starting_classes(schedule_df)
     }
 
     return result_json
@@ -254,20 +259,62 @@ def get_barplot_data(schedule_filename, classroom_filename):
     result_json = {
         'number_of_classrooms_and_sits': get_number_of_classroom_and_sits(classroom_df),
         'number_of_classrooms_unused_per_day': get_number_of_classrooms_unused_per_day(schedule_df),
-        'number_of_classes_for_each_day': get_classes_per_days(schedule_df)
+        'number_of_classes_for_each_day': get_classes_per_days(schedule_df),
+        'starting_time_and_length_of_classes': get_starting_time_and_length_of_every_class(schedule_df),
+        'number_of_classes_per_day_and_hour': get_number_of_classes_per_day_and_hour(schedule_df)
     }
 
     return result_json
 
 
 def save_file_to_s3(filename):
-    print(filename)
     bucket = 'timetableuploadedfiles'  # already created on S3
     s3 = boto3.client('s3')
    
     s3.upload_file(filename, bucket, filename)
-    print(filename)
     return
+
+def get_starting_time_and_length_of_every_class(schedule_df):
+    """ Returns the starting time and the length of the class for each class. """
+
+    schedule_df = schedule_df[~schedule_df["Start"].isna()]
+
+    result_json = {
+        'start_time': schedule_df["Start"].to_list(),
+        'length_of_class_in_hours': schedule_df["Overall time in hours"].to_list()
+    }
+
+    return result_json
+
+def get_number_of_classes_per_day_and_hour(schedule_df):
+    group_by_day_and_hour = schedule_df.groupby(by=["Day of the week", "Start_hour", "Overall time in hours"]).size().reset_index(name="counts")
+
+    days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+    start_hours = [x for x in range(8,24)]  # goes from 8 until 23
+
+    res_dict = {}
+    for d in days:
+        res_dict[d] = {}
+        for hour in start_hours:
+            res_dict[d][hour] = 0
+
+    for index, row in group_by_day_and_hour.iterrows():
+        i = 0 
+
+        while i < row["Overall time in hours"]:
+            res_dict[row["Day of the week"]][row["Start_hour"]+i] += row["counts"]
+            i += 1 
+
+
+    return res_dict
+
+
+def get_number_of_late_starting_classes(schedule_df):
+    return schedule_df[schedule_df["Start_hour"] >= 19.0].shape[0]
+
+
+def get_number_of_early_starting_classes(schedule_df):
+    return schedule_df[schedule_df["Start_hour"] <= 9.0].shape[0]
 
 
 if __name__ == "__main__":

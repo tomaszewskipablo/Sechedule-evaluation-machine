@@ -48,6 +48,13 @@ def upload_file():
         return 'file uploaded successfully'
 
 
+@app.errorhandler(401)
+def unauthorized(error):
+    return json.dumps({"code": "invalid_token",
+                       "message": "The access token was missing, invalid or expired"}), \
+           401, {'Content-Type': 'application/json; charset=utf-8'}
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)  # run our Flask app
 
