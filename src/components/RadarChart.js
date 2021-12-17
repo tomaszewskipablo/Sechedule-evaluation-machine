@@ -28,7 +28,7 @@ class RadarChart extends React.Component {
       <Radar
         data={this.props.data}
         options={options}
-        style={{ height: "460px", width: "540px" }}
+        style={{ height: "480px", width: "540px" }}
       />
     );
   }
