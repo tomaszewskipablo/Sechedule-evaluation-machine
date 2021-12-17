@@ -131,7 +131,7 @@ class DensitySite extends React.Component {
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
-          <ReactDensityPlot data={reactCalendarData} />
+          {/*<ReactDensityPlot data={reactCalendarData} />*/}
           <GithubDensityPlot data={githubLikeData} schedule={'schedule.csv'} classroom={'classrooms.csv'} dateRange={[startDate, momentNow]} />
         </React.Fragment>
       );
