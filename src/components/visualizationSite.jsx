@@ -50,13 +50,13 @@ const colorsBorder = [
 ];
 
 let arrayMain = [];
-const final = [];
+let final = [];
 
 let data = {
   labels: [
     "Classes with unspecified date",
-    "Free classrooms for min 2 hours",
-    "Free classrooms for one day",
+    "Number of early starting classes",
+    "number of late starting classes",
     "Overbooked classes",
     "Required room change for students",
     "Unused classroomss",
@@ -126,11 +126,9 @@ class VisualizationSite extends React.Component {
           json = Object.values(json);
           apiData.push(json);
           if (apiData.length == this.state.scheduleNamescheckedValues.length) {
-            console.log(apiData);
+            console.log("this is very imp ", apiData);
             this.state.data = this.provideRadarData();
             this.forceUpdate();
-          } else {
-            console.log("a fetch returned, but it wasnt the last one");
           }
         });
     });
@@ -157,8 +155,6 @@ class VisualizationSite extends React.Component {
         if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
       }
     }
-    console.log("max ", max);
-    console.log("ApiData1 ", apiData);
 
     for (let j = 0; j < 6; j++) {
       for (let i = 0; i < apiData.length; i++) {
@@ -166,6 +162,23 @@ class VisualizationSite extends React.Component {
       }
     }
 
+    // negative values
+    // let min = [100, 100, 100, 100, 100, 100];
+    // for (let j = 0; j < 6; j++) {
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     if (apiData[i][j] < min[j]) min[j] = apiData[i][j];
+    //   }
+    // }
+
+    // console.log("min= ", min);
+
+    // for (let j = 0; j < 6; j++) {
+    //   if (j == 2 || j == 3) j++; // skip it for free classroom metrics
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     apiData[i][j] = 110 - apiData[i][j];
+    //   }
+    // }
+    final = [];
     for (let j = 0; j < apiData.length; j++) {
       const obj = {
         label: this.state.scheduleNamescheckedValues[j],
@@ -180,8 +193,8 @@ class VisualizationSite extends React.Component {
     return {
       labels: [
         "Classes with unspecified date",
-        "Free classrooms for min 2 hours",
-        "Free classrooms for one day",
+        "Number of early starting classes",
+        "number of late starting classes",
         "Overbooked classes",
         "Required room change for students",
         "Unused classroomss",
@@ -213,17 +226,6 @@ class VisualizationSite extends React.Component {
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
-          {/* <div>
-            <ul>
-              <li>Radar plot</li>
-              <li>Number of overbooked classes</li>
-            </ul>
-            <ul>
-              <li>
-                
-              </li>
-              <li></li>
-            </ul> */}
           <Container>
             <Row>
               <Col sm={9}>
@@ -233,24 +235,12 @@ class VisualizationSite extends React.Component {
                 The radar plot values are given in percentage relatively to the
                 highest value of the particular metric. So the Radar plot
                 doesn't show the values inself, it shows comparision between
-                metrics. It takes some time to calculate the values.{" "}
+                metrics. It takes some time to calculate the values.
               </Col>
             </Row>
           </Container>
-          {/* <div class="container">
-            <div class="row">
-              <div class="col-8">One of three columns</div>
-              <div class="col-3">One of three columns</div>
-            </div>
-          </div> */}
-          {/* <div className="flexContainer">
-            <div className="radar">
-              <RadarChart data={this.state.data} />
-            </div>
-            <div className="legend">nbhbhjbh</div> */}
           <BarChart />
           <BarChartSeatsPerClass />
-          {/* </div> */}
         </React.Fragment>
       );
     }
