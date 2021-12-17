@@ -77,13 +77,13 @@ class DensitySite extends React.Component {
     }
     else {
 
-      let countOfHoursToDisplay = 15;
+      let countOfHoursToDisplay = 16;
 
-      let momentNow = moment('1971-jan-1 23:00');
+      let momentNow = moment('1971-jan-1 00:00');
       let startDate = moment(momentNow).add(-countOfHoursToDisplay, 'hours');
 
       // dummy data
-      let githubLikeData = Array.from(new Array(countOfHoursToDisplay)).map((_, index) => {
+      let githubLikeData = Array.from(new Array(countOfHoursToDisplay * 5)).map((_, index) => {
         return {
           date: moment(startDate).add(index, 'hours'),
           value: Math.floor(Math.random() * 100)
@@ -132,7 +132,7 @@ class DensitySite extends React.Component {
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
           <ReactDensityPlot data={reactCalendarData} />
-          <GithubDensityPlot data={githubLikeData} dateRange={[startDate, momentNow]} />
+          <GithubDensityPlot data={githubLikeData} schedule={'schedule.csv'} classroom={'classrooms.csv'} dateRange={[startDate, momentNow]} />
         </React.Fragment>
       );
     }

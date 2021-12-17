@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 
 const DayNames = {
@@ -76,11 +76,16 @@ function Timeline({ range, data, colorFunc }) {
 
         <div className="timeline-cells">
           {cells.map((_, index) => {
-            let date = moment(startDate).add(index, 'hour');
+            let date = moment(startDate).add(index, 'hours');
             let dataPoint = data.find(d => moment(date).format(DayFormat) === moment(d.date).format(DayFormat));
-            let alpha = colorMultiplier * dataPoint.value;
-            let color = colorFunc({ alpha });
-
+            console.log(dataPoint);
+            let color = "";
+            if (data.length > 0)
+            {
+              let alpha = colorMultiplier * dataPoint.value;
+              color = colorFunc({ alpha });
+            }
+            
             return (
               <Cell
                 key={index}
@@ -96,23 +101,47 @@ function Timeline({ range, data, colorFunc }) {
   );
 }
 
-class GithubDensityPlot extends React.Component {
+export function GithubDensityPlot(props) {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-    }
-  }
+  const [data, setData] = useState([]);
+  console.log(data);
 
-  render() {
-    // 1 year range
-    console.log(this.props.data);
-    return (
-      <>
-        <Timeline range={this.props.dateRange} data={this.props.data} colorFunc={({ alpha }) => `rgba(3, 160, 3, ${alpha})`} />
-      </>
-    );
-  }
+  useEffect(() => {
+    fetch(`http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=${props.schedule}&classroom_filename=${props.classroom}`)
+    .then((res) => res.json())
+    .then((json) => {
+      console.log(json);
+
+      let weekdays = [
+        "Qua",
+        "Qui",
+        "Seg",
+        "Sex",
+        "Sáb",
+        "Ter"
+      ];
+
+      let newData = [];
+      for (let j = 0; j < 6; j++)
+      {
+        for (let i = 8; i <= 23; i++)
+        {
+          newData.push({ 
+            date: moment('1971-jan-1 00:00').add(i, 'hours'),
+            value: json["number_of_classes_per_day_and_hour"][weekdays[j]][`${i}`]
+          });
+        }
+      }
+      setData(newData);
+      console.log(data);
+    });
+  });
+  
+  return (
+    <>
+      <Timeline range={props.dateRange} data={data} colorFunc={({ alpha }) => `rgba(3, 160, 3, ${alpha})`} />
+    </>
+  );
 }
 
 export default GithubDensityPlot;
