@@ -29,7 +29,7 @@
   "scripts": {
     "heroku-prebuild": "npm i -f",
     "heroku-postbuild": "npm run build",
-    "start": "node ./src/App.js",
+    "start": "react-scripts start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
