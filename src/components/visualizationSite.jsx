@@ -9,11 +9,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import ParCorGraph from "./ParCorGraph";
 //import { Row, Col } from "antd";
 import ReactDensityPlot from "./ReactDensityPlot";
 import GithubDensityPlot from "./Github-like-density-plot";
+import Rectangle from "./Rectangles";
 //import { Row, Col } from "antd";
-
 
 let names = ["adam", "pawel", "gergly", "person", "abc"];
 
@@ -54,18 +55,21 @@ const colorsBorder = [
   "rgba(0, 0, 0, 1)",
 ];
 
+let rectangleObj = [];
+
+const labels = [
+  "Classes with unspecified date",
+  "Number of early starting classes",
+  "number of late starting classes",
+  "Overbooked classes",
+  "Required room change for students",
+  "Unused classroomss",
+];
 let arrayMain = [];
 let final = [];
 
 let data = {
-  labels: [
-    "Classes with unspecified date",
-    "Number of early starting classes",
-    "number of late starting classes",
-    "Overbooked classes",
-    "Required room change for students",
-    "Unused classroomss",
-  ],
+  labels: labels,
   datasets: [
     {
       label: "",
@@ -76,7 +80,6 @@ let data = {
     },
   ],
 };
-
 
 class VisualizationSite extends React.Component {
   constructor(props) {
@@ -92,7 +95,7 @@ class VisualizationSite extends React.Component {
   componentDidMount() {
     console.log("componentDidMount is called");
     fetch(
-      "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/s3_files"
+      "http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/s3_files"
     )
       .then((res) => res.json())
       .then((json) => {
@@ -124,7 +127,7 @@ class VisualizationSite extends React.Component {
     apiData = [];
     this.state.scheduleNamescheckedValues.forEach((element) => {
       let base =
-        "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
+        "http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
       let endpoint = base.concat(element);
 
       fetch(endpoint)
@@ -156,19 +159,19 @@ class VisualizationSite extends React.Component {
 
     arrayMain = [];
     // count max array
-    let max = [0, 0, 0, 0, 0, 0];
-    for (let j = 0; j < 6; j++) {
-      for (let i = 0; i < apiData.length; i++) {
-        if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
-      }
-    }
+    // let max = [0, 0, 0, 0, 0, 0];
+    // for (let j = 0; j < 6; j++) {
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
+    //   }
+    // }
 
-    for (let j = 0; j < 6; j++) {
-      for (let i = 0; i < apiData.length; i++) {
-        apiData[i][j] = (apiData[i][j] / max[j]) * 100;
-      }
-    }
-
+    // for (let j = 0; j < 6; j++) {
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     apiData[i][j] = (apiData[i][j] / max[j]) * 100;
+    //   }
+    // }
+    // console.log("after: ", apiData);
     // negative values
     // let min = [100, 100, 100, 100, 100, 100];
     // for (let j = 0; j < 6; j++) {
@@ -185,28 +188,35 @@ class VisualizationSite extends React.Component {
     //     apiData[i][j] = 110 - apiData[i][j];
     //   }
     // }
+    //let finalU = [];
+    let finalU = [];
+    for (let j = 0; j < 6; j++) {
+      finalU.push([]);
+      for (let i = 0; i < apiData.length; i++) {
+        finalU[j].push(apiData[i][j]);
+      }
+    }
+    let max = [0, 0, 0, 0, 0, 0];
+    for (let j = 0; j < 2; j++) {
+      for (let i = 0; i < finalU.length; i++) {
+        if (max[i] < finalU[i][j]) max[i] = finalU[i][j];
+      }
+    }
+
     final = [];
-    for (let j = 0; j < apiData.length; j++) {
+    for (let j = 0; j < finalU.length; j++) {
       const obj = {
-        label: this.state.scheduleNamescheckedValues[j],
-        data: apiData[j],
-        backgroundColor: colors[j],
-        borderColor: colorsBorder[j],
-        borderWidth: 1,
+        range: [0, max[j] * 1.1],
+        label: labels[j],
+        values: finalU[j],
       };
       final.push(obj);
     }
 
     return {
-      labels: [
-        "Classes with unspecified date",
-        "Number of early starting classes",
-        "number of late starting classes",
-        "Overbooked classes",
-        "Required room change for students",
-        "Unused classroomss",
-      ],
-      datasets: final,
+      type: "parcoords",
+
+      dimensions: final,
     };
   };
 
@@ -235,15 +245,7 @@ class VisualizationSite extends React.Component {
           </div>
           <Container>
             <Row>
-              <Col sm={9}>
-                <RadarChart data={this.state.data} />
-              </Col>
-              <Col sm={3}>
-                The radar plot values are given in percentage relatively to the
-                highest value of the particular metric. So the Radar plot
-                doesn't show the values inself, it shows comparision between
-                metrics. It takes some time to calculate the values.
-              </Col>
+              <ParCorGraph data={this.state.data} />
             </Row>
           </Container>
           <BarChart />
