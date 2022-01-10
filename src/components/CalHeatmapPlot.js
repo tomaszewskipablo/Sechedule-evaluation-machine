@@ -86,9 +86,19 @@ class CalHeatmapPlot extends React.Component {
                 start: new Date(startDate),
                 end: new Date(endDate),
                 cellSize: 20,
-                range: 18,
+                cellPadding: 10,
+                cellRadius: 3,
+                range: 55,
+                colLimit: 1,
                 previousSelector: "#previous",
                 nextSelector: "#next",
+                legend: [20, 40, 60, 80],
+                legendColors: {
+                    empty: "#ededed",
+                    min: "#40ffd8",
+                    max: "#f20013"
+                }
+                //domainLabelFormat: "%d%m"
             });
         });
     }
@@ -96,8 +106,8 @@ class CalHeatmapPlot extends React.Component {
     render() {
         return (
             <div style={{marginTop: '50px'}}>
-                <button id="previous" style={{marginBottom: '10px', marginRight: '5px', border: '1px solid blue'}} className="btn">backwards</button>
-                <button id="next" style={{marginBottom: '10px', border: '1px solid blue'}} className="btn">forwards</button>
+                <button id="previous" style={{marginBottom: '10px', marginRight: '5px', border: '1px solid blue'}} className="btn" onClick={() => { this.cal.previous(7); }}>backwards</button>
+                <button id="next" style={{marginBottom: '10px', border: '1px solid blue'}} className="btn" onClick={() => { this.cal.next(7); }}>forwards</button>
                 <div id="cal-heatmap"></div>
             </div>
         );    
