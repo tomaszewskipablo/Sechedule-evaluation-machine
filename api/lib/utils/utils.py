@@ -283,7 +283,7 @@ def get_starting_time_and_length_of_every_class(schedule_df):
     """ Returns the starting time and the length of the class for each class. """
 
     schedule_df = schedule_df[~schedule_df["Start"].isna()]
-    ordered_shedule_df = schedule_df.sort_values(by=['Start_date'])
+    ordered_schedule_df = schedule_df.sort_values(by=['Start_date'])
 
     result_json = {
         'start_time': ordered_schedule_df["Start"].to_list(),
