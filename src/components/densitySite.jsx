@@ -3,6 +3,8 @@ import ReactDensityPlot from "./ReactDensityPlot";
 import GithubDensityPlot from "./Github-like-density-plot";
 import { Checkbox, Button } from "antd";
 import moment from 'moment';
+import CalHeatmapPlot from "./CalHeatmapPlot"
+
 
 const names = ["adam", "pawel", "gergly", "person", "abc"];
 
@@ -19,7 +21,7 @@ class DensitySite extends React.Component {
 
   componentDidMount() {
     fetch(
-      "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/s3_files"
+      "http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/s3_files"
     )
       .then((res) => res.json())
       .then((json) => {
@@ -56,7 +58,7 @@ class DensitySite extends React.Component {
 
   provideDensityPlotData = () => {
     fetch(
-      "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=schedule.csv&classroom_filename=classrooms.csv"
+      "http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=schedule.csv&classroom_filename=classrooms.csv"
     )
       .then((res) => res.json())
       .then((json) => console.log(json));
@@ -132,6 +134,7 @@ class DensitySite extends React.Component {
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
           {/*<ReactDensityPlot data={reactCalendarData} />*/}
+          <CalHeatmapPlot schedule={`${this.state.scheduleNamescheckedValues[0].trim()}`} classroom={'classrooms.csv'} />
           <GithubDensityPlot data={githubLikeData} schedule={`${this.state.scheduleNamescheckedValues[0].trim()}`} classroom={'classrooms.csv'} dateRange={[startDate, momentNow]} />
         </React.Fragment>
       );

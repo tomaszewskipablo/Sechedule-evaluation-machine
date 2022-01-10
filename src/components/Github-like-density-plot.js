@@ -78,7 +78,7 @@ function Timeline({ range, data, colorFunc }) {
           {cells.map((_, index) => {
             let date = moment(startDate).add(index, 'hours');
             let dataPoint = data.find(d => moment(date).format(DayFormat) === moment(d.date).format(DayFormat));
-            console.log(dataPoint);
+            //console.log(dataPoint);
             let color = "";
             if (data.length > 0)
             {
@@ -104,13 +104,13 @@ function Timeline({ range, data, colorFunc }) {
 export function GithubDensityPlot(props) {
 
   const [data, setData] = useState([]);
-  console.log(data);
+  //console.log(data);
 
   useEffect(() => {
-    fetch(`http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=${props.schedule}&classroom_filename=${props.classroom}`)
+    fetch(`http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=${props.schedule}&classroom_filename=${props.classroom}`)
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
+      //console.log(json);
 
       let weekdays = [
         "Qua",
@@ -133,7 +133,7 @@ export function GithubDensityPlot(props) {
         }
       }
       setData(newData);
-      console.log(data);
+      //console.log(data);
     });
   });
   

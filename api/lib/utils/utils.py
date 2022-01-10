@@ -47,6 +47,11 @@ def rename_columns_from_portuguese_to_english(df):
 
 def convert_dtypes(df):
     df = df.convert_dtypes()
+    
+    df = df[df.Date.notna()]
+
+    df["Start_date"] = df["Date"] + " " + df["Start"]
+    df["Start_date"] = pd.to_datetime(df["Start_date"], format='%m/%d/%Y %H:%M:%S')
 
     df["Date"] = pd.to_datetime(df["Date"])
 
@@ -278,10 +283,12 @@ def get_starting_time_and_length_of_every_class(schedule_df):
     """ Returns the starting time and the length of the class for each class. """
 
     schedule_df = schedule_df[~schedule_df["Start"].isna()]
+    ordered_schedule_df = schedule_df.sort_values(by=['Start_date'])
 
     result_json = {
-        'start_time': schedule_df["Start"].to_list(),
-        'length_of_class_in_hours': schedule_df["Overall time in hours"].to_list()
+        'start_time': ordered_schedule_df["Start"].to_list(),
+        'length_of_class_in_hours': ordered_schedule_df["Overall time in hours"].to_list(),
+        'start_date': ordered_schedule_df["Start_date"].to_list()
     }
 
     return result_json
