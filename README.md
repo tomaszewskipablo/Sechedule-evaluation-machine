@@ -38,9 +38,35 @@ To do that, follow this guide.
 
 1. Register an account on AWS
 1. Set up a billing alarm 
-1. Create a free EC2 instance which will host your public API endpoint
+1. Create a free EC2 instance (with a private key so later you can ssh into it) which will host your public API endpoint
+1. Set up the security rules
+
+Inbound rules
+| IP version | Type       | Protocol | Port | Source    |
+|------------|------------|----------|------|-----------|
+| Ipv6       | HTTP       | TCP      | 80   | ::/0      |
+| Ipv4       | HTTP       | TCP      | 80   | 0.0.0.0/0 |
+| Ipv4       | SSH        | TCP      | 22   | your_ip   |
+| Ipv4       | Custom TCP | TCP      | 5000 | 0.0.0.0/0 |
+| Ipv4       | HTTPS      | TCP      | 443  | 0.0.0.0/0 |
+| IPv6       | Custom TCP | TCP      | 5000 | ::/0      |
+
+Outbound rules
+| IP version | Type        | Protocol | Port | Source    |
+|------------|-------------|----------|------|-----------|
+| Ipv4       | HTTPS       | TCP      | 443  | 0.0.0.0/0 |
+| Ipv4       | All traffic | All      | All  | 0.0.0.0/0 |
+| Ipv4       | HTTP        | TCP      | 80   | 0.0.0.0/0 |
+
 1. Create an S3 bucket where you will store your .csv files
-1. Clone the project
+1. Once you have created the EC2 instance SSH to it with your private key, using the following command
+``` ssh -i "your_key.pem" ubuntu@your_public_dns```
+1. After you managed to SSH into it, clone the project
+1. Install the required dependencies
+1. Start the API by (it will run on )
+``` flask run --host=0.0.0.0 ```
+1. In case the endpoint doesn't work, change it to your public dns with port 5000, for example(http://ec2-1-234-567-999.eu-central-1.compute.amazonaws.com:5000/get_what_i_want)
+
 
 
 
