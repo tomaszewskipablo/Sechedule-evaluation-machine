@@ -17,11 +17,7 @@ class RadarChart extends React.Component {
     };
   }
 
-  componentDidUpdate() {
-    console.log("UPDATE!!!!!!");
-    // console.log("UPDATE!!!!!!");
-    console.log("Jestem w komponencie to jest efekt: ", this.props.data);
-  }
+  componentDidUpdate() {}
 
   render() {
     return (
