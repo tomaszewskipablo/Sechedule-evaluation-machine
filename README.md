@@ -67,9 +67,16 @@ Outbound rules
 1. After you managed to SSH into it, clone the project
 1. Install the required dependencies
 1. Move into the /api folder by ```cd api```
-1. Start the API by (it will run on ) <br>
-``` flask run --host=0.0.0.0 ```
+1. Start the API by first creating a new tmux session and the starting the flask app(it will run on ) <br>
+``` tmux new -s api-server``` <br>
+``` flask run --host=0.0.0.0 ``` <br>
+You can detach from this windows by pressing ```Ctrl + B, D``` 
 1. In case the endpoint doesn't work, change it to your public dns with port 5000, for example(http://ec2-1-234-567-999.eu-central-1.compute.amazonaws.com:5000/get_what_i_want)
+1. In order for the AWS services to work, you need to configure your EC2 instance by running <br>
+```aws configure``` 
+then add your access key and secret key.
+1. Make sure that your S3 and EC2 configurations inside the code are correctly set up
+1. Enjoy developing ! :smile: 
 
 ## Future ideas
 
@@ -96,8 +103,6 @@ More to be added later.
         1. Function: *get_total_class_changes*
     1. Total number of classes with unspecified date
         1. Function: *get_total_number_of_classes_with_unspecified_date*
-    1. Rate of matching between assigned classroom and requested classroom characteristics
-        1. Function:  
     1. Number of classrooms not used during the whole semester
         1. Function: *get_total_classrooms_unused_in_semester*
 1. Basic barplots
@@ -105,15 +110,8 @@ More to be added later.
         1. Function: *get_number_of_classroom_and_sits*
     1. Number of classrooms unused (y) per day (x)
         1. Function: *get_number_of_classrooms_unused_per_day*
-    1. Total slots needed for each week (Total slot = Sum of students that need to sit the class during the week), timeseries plot
     1. Number of classes for each weekday 
         1. Function: *get_classes_per_days*
-1. Heatmap / Density map
-    1. Timetable with number of classes being in that given time period (2 hours windows)
-    
-
-## Extra ideas
-    1. Plot for usage of each classroom 
 
 ## Things that might be handy later
 1. [Swagger for building documentation, flasgger for Flask APIs](https://github.com/flasgger/flasgger)
