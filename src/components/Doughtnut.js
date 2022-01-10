@@ -48,7 +48,7 @@ class DoughnutChart extends React.Component {
         <Doughnut
           data={data}
           options={{ maintainAspectRatio: false }}
-          style={{ height: "460px", width: "540px" }}
+          style={{ height: "860px", width: "840px" }}
         />
       </React.Fragment>
     );

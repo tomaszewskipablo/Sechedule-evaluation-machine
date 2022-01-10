@@ -4,18 +4,28 @@ import Doughtnut from "./Doughtnut";
 import BarChart from "./BarChart";
 import BarChartSeatsPerClass from "./BarChartSeatsPerClass";
 import { Checkbox, Button } from "antd";
+import { stringLiteral } from "@babel/types";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+//import { Row, Col } from "antd";
+import ReactDensityPlot from "./ReactDensityPlot";
+import GithubDensityPlot from "./Github-like-density-plot";
+//import { Row, Col } from "antd";
 
-const names = ["adam", "pawel", "gergly", "person", "abc"];
 
-const a = [10, 20, 20, 20, 11]; // adams
+let names = ["adam", "pawel", "gergly", "person", "abc"];
 
-const b = [13, 10, 3, 6, 2]; // pawel
+const a = [10, 20, 20, 20, 11, 10]; // adams
+
+const b = [13, 10, 3, 6, 2, 11]; // pawel
 
 const c = [6, 7, 4, 5, 3];
 const d = [2, 2, 4, 4, 4];
 const abc = [4, 7, 8, 11, 2];
 
-const apiData = [a, b, c, d, abc];
+let apiData = [];
 
 const colors = [
   "rgba(0, 99, 132, 0.2)",
@@ -45,18 +55,28 @@ const colorsBorder = [
 ];
 
 let arrayMain = [];
-const final = [];
+let final = [];
 
 let data = {
   labels: [
-    "Free classes, at least 2 hours",
-    "Free classes, whole day",
-    "Matching rate",
-    "Some statistics",
-    "Some statistics",
+    "Classes with unspecified date",
+    "Number of early starting classes",
+    "number of late starting classes",
+    "Overbooked classes",
+    "Required room change for students",
+    "Unused classroomss",
   ],
-  datasets: final,
+  datasets: [
+    {
+      label: "",
+      data: [],
+      backgroundColor: "",
+      borderColor: "",
+      borderWidth: 1,
+    },
+  ],
 };
+
 
 class VisualizationSite extends React.Component {
   constructor(props) {
@@ -65,22 +85,31 @@ class VisualizationSite extends React.Component {
       scheduleNames: [],
       isLoaded: false,
       scheduleNamescheckedValues: [],
+      data,
     };
   }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    console.log("componentDidMount is called");
+    fetch(
+      "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/s3_files"
+    )
       .then((res) => res.json())
       .then((json) => {
+        const filesNamesArrayToTrim = json
+          .replace("[", "")
+          .replace("]", "")
+          .replace(/\\"/g, "")
+          .replace(/"/g, "")
+          .split(",");
+
         this.setState({
-          scheduleNames: ["adam", "pawel", "gergly", "kac"],
-          //scheduleNames: json,
+          scheduleNames: filesNamesArrayToTrim.map((x) => x.trim()),
         });
-        console.log(json);
       });
   }
 
-  getVisualizeData = () => {
+  fetchData = async () => {
     if (this.state.scheduleNamescheckedValues.length > 0) {
       this.setState({
         isLoaded: true,
@@ -90,8 +119,30 @@ class VisualizationSite extends React.Component {
         isLoaded: false,
       });
     }
-    this.provideRadarData();
-    console.log("checked = ", this.state.scheduleNamescheckedValues);
+    names = this.state.scheduleNamescheckedValues;
+
+    apiData = [];
+    this.state.scheduleNamescheckedValues.forEach((element) => {
+      let base =
+        "http://ec2-3-70-254-32.eu-central-1.compute.amazonaws.com:5000/radarplotmetrics?schedule_filename=";
+      let endpoint = base.concat(element);
+
+      fetch(endpoint)
+        .then((resa) => resa.json())
+        .then((json) => {
+          json = Object.values(json);
+          apiData.push(json);
+          if (apiData.length == this.state.scheduleNamescheckedValues.length) {
+            console.log("this is very imp ", apiData);
+            this.state.data = this.provideRadarData();
+            this.forceUpdate();
+          }
+        });
+    });
+  };
+
+  getVisualizeData = () => {
+    this.fetchData();
   };
 
   updateCheckedValueList = (checkedValuesList) => {
@@ -101,29 +152,66 @@ class VisualizationSite extends React.Component {
   };
 
   provideRadarData = () => {
+    console.log("apiData: ", apiData);
+
     arrayMain = [];
-    for (let i = 0; i < apiData.length; i++) {
-      const arrayN = [];
-      for (let j = 0; j < a.length; j++) {
-        arrayN.push(apiData[i][j]);
+    // count max array
+    let max = [0, 0, 0, 0, 0, 0];
+    for (let j = 0; j < 6; j++) {
+      for (let i = 0; i < apiData.length; i++) {
+        if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
       }
-      arrayMain.push(arrayN);
     }
 
-    for (let j = 0; j < arrayMain.length; j++) {
+    for (let j = 0; j < 6; j++) {
+      for (let i = 0; i < apiData.length; i++) {
+        apiData[i][j] = (apiData[i][j] / max[j]) * 100;
+      }
+    }
+
+    // negative values
+    // let min = [100, 100, 100, 100, 100, 100];
+    // for (let j = 0; j < 6; j++) {
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     if (apiData[i][j] < min[j]) min[j] = apiData[i][j];
+    //   }
+    // }
+
+    // console.log("min= ", min);
+
+    // for (let j = 0; j < 6; j++) {
+    //   if (j == 2 || j == 3) j++; // skip it for free classroom metrics
+    //   for (let i = 0; i < apiData.length; i++) {
+    //     apiData[i][j] = 110 - apiData[i][j];
+    //   }
+    // }
+    final = [];
+    for (let j = 0; j < apiData.length; j++) {
       const obj = {
-        label: names[j],
-        data: arrayMain[j],
+        label: this.state.scheduleNamescheckedValues[j],
+        data: apiData[j],
         backgroundColor: colors[j],
         borderColor: colorsBorder[j],
         borderWidth: 1,
       };
       final.push(obj);
     }
+
+    return {
+      labels: [
+        "Classes with unspecified date",
+        "Number of early starting classes",
+        "number of late starting classes",
+        "Overbooked classes",
+        "Required room change for students",
+        "Unused classroomss",
+      ],
+      datasets: final,
+    };
   };
 
   render() {
-    var { isLoaded, scheduleNames, checkedValues } = this.state;
+    var { isLoaded, scheduleNames, checkedValues, data } = this.state;
 
     if (!isLoaded) {
       return (
@@ -145,22 +233,21 @@ class VisualizationSite extends React.Component {
             />
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
-          <div className="graphPanel">
-            <ul>
-              <li>Radar plot</li>
-              <li>Number of overbooked classes</li>
-            </ul>
-            <ul>
-              <li>
-                <RadarChart data={data} />
-              </li>
-              <li>
-                <Doughtnut labels={names} data={[12, 19, 3, 5, 2]} />
-              </li>
-            </ul>
-            <BarChart />
-            <BarChartSeatsPerClass />
-          </div>
+          <Container>
+            <Row>
+              <Col sm={9}>
+                <RadarChart data={this.state.data} />
+              </Col>
+              <Col sm={3}>
+                The radar plot values are given in percentage relatively to the
+                highest value of the particular metric. So the Radar plot
+                doesn't show the values inself, it shows comparision between
+                metrics. It takes some time to calculate the values.
+              </Col>
+            </Row>
+          </Container>
+          <BarChart />
+          <BarChartSeatsPerClass />
         </React.Fragment>
       );
     }

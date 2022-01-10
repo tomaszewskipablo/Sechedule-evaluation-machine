@@ -47,3 +47,16 @@ ul {
 .graphPanel:hover {
   background-color: #fafafa;
 }
+
+/* .flexContainer {
+  display: flex;
+  width: 100%;
+}
+
+.radar {
+  width: 65%;
+}
+
+.legend {
+  width: 30%;
+} */
