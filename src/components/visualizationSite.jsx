@@ -81,6 +81,19 @@ let data = {
   ],
 };
 
+let dataRadarCircle = {
+  labels: labels,
+  datasets: [
+    {
+      label: "",
+      data: [],
+      backgroundColor: "",
+      borderColor: "",
+      borderWidth: 1,
+    },
+  ],
+};
+
 class VisualizationSite extends React.Component {
   constructor(props) {
     super(props);
@@ -89,6 +102,7 @@ class VisualizationSite extends React.Component {
       isLoaded: false,
       scheduleNamescheckedValues: [],
       data,
+      dataRadarCircle,
     };
   }
 
@@ -136,8 +150,8 @@ class VisualizationSite extends React.Component {
           json = Object.values(json);
           apiData.push(json);
           if (apiData.length == this.state.scheduleNamescheckedValues.length) {
-            console.log("this is very imp ", apiData);
             this.state.data = this.provideRadarData();
+            this.state.dataRadarCircle = this.provideRadarCirclePlotData();
             this.forceUpdate();
           }
         });
@@ -154,40 +168,51 @@ class VisualizationSite extends React.Component {
     });
   };
 
+  provideRadarCirclePlotData = () => {
+    //count max array
+    let max = [0, 0, 0, 0, 0, 0];
+    for (let j = 0; j < 6; j++) {
+      for (let i = 0; i < apiData.length; i++) {
+        if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
+      }
+    }
+
+    for (let j = 0; j < 6; j++) {
+      for (let i = 0; i < apiData.length; i++) {
+        apiData[i][j] = (apiData[i][j] / max[j]) * 100;
+      }
+    }
+
+    final = [];
+    for (let j = 0; j < apiData.length; j++) {
+      const obj = {
+        label: this.state.scheduleNamescheckedValues[j],
+        data: apiData[j],
+        backgroundColor: colors[j],
+        borderColor: colorsBorder[j],
+        borderWidth: 1,
+      };
+      final.push(obj);
+    }
+
+    return {
+      labels: [
+        "Classes with unspecified date",
+        "Number of early starting classes",
+        "number of late starting classes",
+        "Overbooked classes",
+        "Required room change for students",
+        "Unused classroomss",
+      ],
+      datasets: final,
+    };
+  };
+
   provideRadarData = () => {
     console.log("apiData: ", apiData);
 
     arrayMain = [];
-    // count max array
-    // let max = [0, 0, 0, 0, 0, 0];
-    // for (let j = 0; j < 6; j++) {
-    //   for (let i = 0; i < apiData.length; i++) {
-    //     if (apiData[i][j] > max[j]) max[j] = apiData[i][j];
-    //   }
-    // }
 
-    // for (let j = 0; j < 6; j++) {
-    //   for (let i = 0; i < apiData.length; i++) {
-    //     apiData[i][j] = (apiData[i][j] / max[j]) * 100;
-    //   }
-    // }
-    // console.log("after: ", apiData);
-    // negative values
-    // let min = [100, 100, 100, 100, 100, 100];
-    // for (let j = 0; j < 6; j++) {
-    //   for (let i = 0; i < apiData.length; i++) {
-    //     if (apiData[i][j] < min[j]) min[j] = apiData[i][j];
-    //   }
-    // }
-
-    // console.log("min= ", min);
-
-    // for (let j = 0; j < 6; j++) {
-    //   if (j == 2 || j == 3) j++; // skip it for free classroom metrics
-    //   for (let i = 0; i < apiData.length; i++) {
-    //     apiData[i][j] = 110 - apiData[i][j];
-    //   }
-    // }
     //let finalU = [];
     let finalU = [];
     for (let j = 0; j < 6; j++) {
@@ -244,6 +269,19 @@ class VisualizationSite extends React.Component {
             <Button onClick={this.getVisualizeData}>Confirm</Button>
           </div>
           <Container>
+            <Row>
+              <Col sm={9}>
+                <RadarChart data={this.state.dataRadarCircle} />
+              </Col>
+              <Col sm={3}>
+                <p style={{ marginTop: "20px" }}>
+                  The radar plot values are given in percentage relatively to
+                  the highest value of the particular metric. So the Radar plot
+                  doesn't show the values inself, it shows comparision between
+                  metrics. It takes some time to calculate the values.
+                </p>
+              </Col>
+            </Row>
             <Row>
               <ParCorGraph data={this.state.data} />
             </Row>
