@@ -103,6 +103,7 @@ class VisualizationSite extends React.Component {
       scheduleNamescheckedValues: [],
       data,
       dataRadarCircle,
+      dataJson: [],
     };
   }
 
@@ -152,8 +153,20 @@ class VisualizationSite extends React.Component {
           if (apiData.length == this.state.scheduleNamescheckedValues.length) {
             this.state.data = this.provideRadarData();
             this.state.dataRadarCircle = this.provideRadarCirclePlotData();
-            this.forceUpdate();
           }
+        });
+
+      let b =
+        "http://ec2-3-121-160-188.eu-central-1.compute.amazonaws.com:5000/barplotdata?schedule_filename=";
+      let e = "&classroom_filename=classrooms.csv";
+      let endpoint1 = b.concat(element);
+      endpoint1 = endpoint1.concat(e);
+      console.log(endpoint1);
+      fetch(endpoint1)
+        .then((res) => res.json())
+        .then((json) => {
+          this.state.dataJson = json;
+          this.forceUpdate();
         });
     });
   };
@@ -286,7 +299,10 @@ class VisualizationSite extends React.Component {
               <ParCorGraph data={this.state.data} />
             </Row>
           </Container>
-          <BarChart />
+          <BarChart
+            dataJson={this.state.dataJson}
+            scheduleNames={this.state.scheduleNamescheckedValues}
+          />
           <BarChartSeatsPerClass />
         </React.Fragment>
       );
