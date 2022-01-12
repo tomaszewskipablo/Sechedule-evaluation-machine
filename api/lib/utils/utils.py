@@ -50,8 +50,8 @@ def convert_dtypes(df):
     
     df = df[df.Date.notna()]
 
-    df["Start_date"] = df["Date"] + " " + df["Start"]
-    df["Start_date"] = pd.to_datetime(df["Start_date"], format='%m/%d/%Y %H:%M:%S')
+    df["Start_date"] = df["Date"].fillna('') + " " + df["Start"].fillna('')
+    df["Start_date"] = pd.to_datetime(df["Start_date"], format='%m/%d/%Y %H:%M:%S', errors='coerce')
 
     df["Date"] = pd.to_datetime(df["Date"])
 
