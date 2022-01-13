@@ -47,8 +47,6 @@ def rename_columns_from_portuguese_to_english(df):
 
 def convert_dtypes(df):
     df = df.convert_dtypes()
-    
-    df = df[df.Date.notna()]
 
     df["Start_date"] = df["Date"].fillna('') + " " + df["Start"].fillna('')
     df["Start_date"] = pd.to_datetime(df["Start_date"], format='%m/%d/%Y %H:%M:%S', errors='coerce')
