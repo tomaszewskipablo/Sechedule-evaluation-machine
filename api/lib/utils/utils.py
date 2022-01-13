@@ -51,10 +51,10 @@ def convert_dtypes(df):
     df["Start_date"] = df["Date"].fillna('') + " " + df["Start"].fillna('')
     df["Start_date"] = pd.to_datetime(df["Start_date"], format='%m/%d/%Y %H:%M:%S', errors='coerce')
 
-    df["Date"] = pd.to_datetime(df["Date"])
+    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
 
-    df["Start"] = pd.to_datetime(df["Start"])
-    df["End"] = pd.to_datetime(df["End"])
+    df["Start"] = pd.to_datetime(df["Start"], errors='coerce')
+    df["End"] = pd.to_datetime(df["End"], errors='coerce')
 
     return df
 
@@ -280,7 +280,9 @@ def save_file_to_s3(filename):
 def get_starting_time_and_length_of_every_class(schedule_df):
     """ Returns the starting time and the length of the class for each class. """
 
-    schedule_df = schedule_df[~schedule_df["Start"].isna()]
+    schedule_df = schedule_df[schedule_df["Start"].notna()]
+
+    schedule_df = schedule_df[schedule_df["Start_date"].notna()]
     ordered_schedule_df = schedule_df.sort_values(by=['Start_date'])
 
     result_json = {
